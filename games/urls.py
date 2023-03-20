@@ -1,9 +1,12 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import SimpleRouter
 
-from games.views import GamesView, GameView, RootView
+from . import views
+
+router = SimpleRouter()
+router.register("games", views.GameView)
 
 urlpatterns = [
-    path("", RootView.as_view(), name="root_view"),
-    path("games", GamesView.as_view(), name="game_list"),
-    path("games/<int:pk>", GameView.as_view(), name="game_list"),
+    path("", views.RootView.as_view(), name="root_view"),
+    path("", include(router.urls)),
 ]

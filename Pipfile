@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 django = "~=4.1"
+djangorestframework = "~=3.1"
 
 [dev-packages]
 pytest = "~=7.2"
