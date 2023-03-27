@@ -1,15 +1,6 @@
-from django.http import HttpRequest, JsonResponse
-from django.views import View
 from rest_framework import mixins, viewsets
 
 from . import models, serializers
-
-
-class RootView(View):
-    """Return JSON with alive confirmation."""
-
-    def get(self, request: HttpRequest) -> JsonResponse:
-        return JsonResponse({"status": "OK"})
 
 
 class GameView(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

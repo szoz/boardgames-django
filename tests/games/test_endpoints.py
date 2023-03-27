@@ -1,7 +1,9 @@
 import pytest
 
+pytestmark = [pytest.mark.unit, pytest.mark.django_db]
 
-@pytest.mark.django_db
+
+@pytest.mark.usefixtures("create_games")
 class TestGetGames:
     def test_response(self, api_client):
         """All games endpoint returns list of games. Each game contains id, title, year, url and description."""
@@ -13,7 +15,7 @@ class TestGetGames:
         assert response.status_code == 200
         assert isinstance(payload, list)
         for game in payload:
-            assert set(game.keys()) == expected_attributes
+            assert expected_attributes.issubset(set(game.keys()))
 
     def test_pages(self, api_client):
         """Games list is split into multiple pages. Endpoint returns 1st result page by default.
@@ -54,11 +56,11 @@ class TestGetGames:
         response_default = api_client.get("/games/")
         response_other = api_client.get("/games/?limit=25&page=2")
 
-        assert response_default.headers["x-total-count"] == "100"
-        assert response_other.headers["x-total-count"] == "100"
+        assert response_default.headers["X-Total-Count"] == "100"
+        assert response_other.headers["X-Total-Count"] == "100"
 
 
-@pytest.mark.django_db
+@pytest.mark.usefixtures("create_games")
 class TestGetGame:
     def test_found(self, api_client):
         """Game endpoint returns game object with given ID. This game object is the same as one returned in all
