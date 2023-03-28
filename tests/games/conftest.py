@@ -1,15 +1,19 @@
 import pytest
 
 from games.models import Game
-from tests.games.factories import game_factory
+from tests.games.factories import GameFactory
 
 
 @pytest.fixture(scope="class")
-def create_games(django_db_setup, django_db_blocker) -> None:
+def game_factory() -> type[GameFactory]:
+    """Return factory class."""
+    return GameFactory
+
+
+@pytest.fixture(scope="class")
+def create_100_games(django_db_setup, django_db_blocker, game_factory) -> None:
     """Create 100 game objects in test database."""
     with django_db_blocker.unblock():
         Game.objects.all().delete()
 
-        for count in range(100):
-            game = game_factory(id=count + 1)
-            game.save()
+        game_factory.create_batch(100)

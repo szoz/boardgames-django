@@ -1,22 +1,14 @@
-from faker import Faker
-
-from games.models import Game
-
-fake = Faker()
+import factory
 
 
-def game_factory(**kwargs) -> Game:
-    """Create and return game object."""
-    if kwargs.get("id"):
-        fake.seed_instance(kwargs["id"])  # make test not-flaky
+class GameFactory(factory.django.DjangoModelFactory):
+    """Generic game object factory."""
 
-    title = fake.sentence(nb_words=3).rstrip(".")
-    default = {
-        "title": title,
-        "year": 2023,
-        "url": f'https://boardgamegeek.com/boardgame/{kwargs.get("id", 0)}/game',
-        "description": f"{title} {fake.sentence().lower()}",
-    }
-    attributes = default | kwargs
+    class Meta:
+        model = "games.Game"
 
-    return Game(**attributes)
+    id = factory.Sequence(lambda n: n + 1)
+    title = factory.Sequence(lambda n: f"Game {n}")
+    year = factory.Iterator(range(2000, 2023))
+    url = factory.LazyAttribute(lambda obj: f"https://boardgamegeek.com/boardgame/{obj.id}/game")
+    description = factory.Faker("sentence")

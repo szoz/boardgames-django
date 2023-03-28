@@ -3,7 +3,7 @@ import pytest
 pytestmark = [pytest.mark.unit, pytest.mark.django_db]
 
 
-@pytest.mark.usefixtures("create_games")
+@pytest.mark.usefixtures("create_100_games")
 class TestGetGames:
     def test_response(self, api_client):
         """All games endpoint returns list of games. Each game contains id, title, year, url and description."""
@@ -60,7 +60,7 @@ class TestGetGames:
         assert response_other.headers["X-Total-Count"] == "100"
 
 
-@pytest.mark.usefixtures("create_games")
+@pytest.mark.usefixtures("create_100_games")
 class TestGetGame:
     def test_found(self, api_client):
         """Game endpoint returns game object with given ID. This game object is the same as one returned in all

@@ -10,7 +10,7 @@ djangorestframework = "~=3.1"
 [dev-packages]
 pytest = "~=7.2"
 pytest-django = "~=4.5"
-faker = "~=18.3"
+factory-boy = "~=3.2"
 black = "~=23.1"
 flake8 = "~=6.0"
 isort = "~=5.12"
