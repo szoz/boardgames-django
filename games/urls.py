@@ -6,6 +6,7 @@ from . import views
 
 router = SimpleRouter()
 router.register("games", views.GameView)
+router.register("categories", views.CategoryView)
 
 urlpatterns = [
     path("", RedirectView.as_view(url="games"), name="root"),

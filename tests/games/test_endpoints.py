@@ -63,7 +63,7 @@ class TestGetGames:
 @pytest.mark.usefixtures("create_100_games")
 class TestGetGame:
     def test_found(self, api_client):
-        """Game endpoint returns game object with given ID. This game object is the same as one returned in all
+        """Game endpoint returns game object with given ID. This object is the same as one returned in all
         games endpoint."""
         expected_game = api_client.get("/games/").json()[0]
 
@@ -75,6 +75,49 @@ class TestGetGame:
 
     def test_not_found(self, api_client):
         """Game endpoint returns not-found response when invalid game ID is provided."""
-        response = api_client.get("/games/1_000_000/")
+        response = api_client.get("/games/1000/")
+
+        assert response.status_code == 404
+
+
+@pytest.mark.usefixtures("create_categories")
+class TestGetCategories:
+    def test_response(self, api_client):
+        """All categories endpoint returns list of categories. Each category contains id, title, url and description."""
+        expected_attributes = {"id", "title", "url", "description"}
+
+        response = api_client.get("/categories/")
+        payload = response.json()
+
+        assert response.status_code == 200
+        assert isinstance(payload, list)
+        for game in payload:
+            assert expected_attributes.issubset(set(game.keys()))
+
+    def test_no_pagination(self, api_client):
+        """There is no pagination in categories list. All 10 categories are returned at once."""
+        response = api_client.get("/categories/")
+        response_limited = api_client.get("/categories/?limit=2")
+
+        assert len(response.json()) == 10
+        assert len(response_limited.json()) == 10
+
+
+@pytest.mark.usefixtures("create_categories")
+class TestGetCategory:
+    def test_found(self, api_client):
+        """Category endpoint returns category object with given ID. This object is the same as one returned in all
+        categories endpoint."""
+        expected_category = api_client.get("/categories/").json()[0]
+
+        response = api_client.get(f'/categories/{expected_category["id"]}/')
+        payload = response.json()
+
+        assert response.status_code == 200
+        assert payload == expected_category
+
+    def test_not_found(self, api_client):
+        """Category endpoint returns not-found response when invalid category ID is provided."""
+        response = api_client.get("/games/1000/")
 
         assert response.status_code == 404
